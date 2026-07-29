@@ -2,3 +2,23 @@
 @plugin "daisyui" {
   themes: night --default;
 }
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("/assets/fonts/Montserrat-Medium.ttf") format("truetype");
+}
+
+@theme {
+  --font-montserrat: "Montserrat", sans-serif;
+  --animate-fade-in: fade-in 0.5s ease-out forwards;
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    } to {
+      opacity: 1;
+    }
+  }
+}
+
+
+
