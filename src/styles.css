@@ -10,7 +10,7 @@
 
 @theme {
   --font-montserrat: "Montserrat", sans-serif;
-  --animate-fade-in: fade-in 0.5s ease-out forwards;
+  --animate-fade-in: fade-in 0.8s ease-out forwards;
   @keyframes fade-in {
     from {
       opacity: 0;
