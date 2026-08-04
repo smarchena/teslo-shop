@@ -4,7 +4,9 @@
     <img [src]="product().images | productImage"   [alt]="product().title">
   </figure>
   <div class="card-body">
-    <h2 class="card-title font-montserrat text-accent text-lg">{{product().title}}</h2>
+    <a [routerLink]="['/product', product().slug]">
+      <h2 class="card-title font-montserrat text-accent text-lg hover:underline">{{product().title}}</h2>
+    </a>
     <p>{{product().description | slice: 0:70 }} ...</p>
     <div class="card-actions justify-end">
       <a [routerLink]="['/product', product().slug]" class="link link-accent">Ver producto</a>

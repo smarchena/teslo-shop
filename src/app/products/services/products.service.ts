@@ -36,4 +36,11 @@ export class ProductService {
     return this.http.get<Product[]>(`${baseUrl}/api/files/product/${imageName}`)
   } */
 
+  getProductByIdSlug(idSlug: string): Observable<Product> {
+    return this.http.get<Product>(`${baseUrl}/products/${idSlug}`)
+    .pipe(
+      tap(resp => console.log(resp))
+    )
+
+  }
 }
