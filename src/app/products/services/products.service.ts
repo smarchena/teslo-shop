@@ -27,9 +27,9 @@ export class ProductService {
         offset: offset,
         gender: gender
       }
-    }).pipe(
+    })/* .pipe(
       tap(resp => console.log(resp))
-    )
+    ) */
   }
 
   /* getImages(imageName: string) {
@@ -38,9 +38,8 @@ export class ProductService {
 
   getProductByIdSlug(idSlug: string): Observable<Product> {
     return this.http.get<Product>(`${baseUrl}/products/${idSlug}`)
-    .pipe(
+    /* .pipe(
       tap(resp => console.log(resp))
-    )
-
+    ) */
   }
 }
