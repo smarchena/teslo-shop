@@ -24,10 +24,10 @@ export class ProductService {
     //verificar productos localStorage
     const productsStorage = localStorage.getItem('products')
 
-    if (productsStorage) { //si existen
+    /* if (productsStorage) { //si existen
       console.log('Productos cargados desde el localStorage')
       return of(JSON.parse(productsStorage))
-    }
+    } */
 
     return this.http.get<ProductsResponse>(`${baseUrl}/products`, { //si no existen
       params: {
@@ -36,11 +36,12 @@ export class ProductService {
         gender: gender
       }
     }).pipe(
-      tap(resp => {
+      tap(resp => console.log(resp))
+      /* tap(resp => {
         localStorage.setItem('products',
         JSON.stringify(resp))
         console.log('Productos guardados en localstorage traidos de la API')
-      })
+      }) */
     )
   }
 

@@ -7,7 +7,7 @@
       "@auth/*": ["./src/app/auth/*"],
       "@dashboard/*": ["./src/app/admin-dashboard/*"],
       "@products/*": ["./src/app/products/*"],
-      "@shared/*": ["./src/app/shared/*"],
+      "@shared/*": ["./src/shared/*"],
       "@store-front/*": ["./src/app/store-front/*"],
     },
     "strict": true,
