@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Product, ProductsResponse } from '@products/interfaces/product.interface';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 const baseUrl = environment.baseUrl
@@ -21,15 +21,27 @@ export class ProductService {
 
     const { limit = 9, offset = 0, gender = '' } = options
 
-    return this.http.get<ProductsResponse>(`${baseUrl}/products`, {
+    //verificar productos localStorage
+    const productsStorage = localStorage.getItem('products')
+
+    if (productsStorage) { //si existen
+      console.log('Productos cargados desde el localStorage')
+      return of(JSON.parse(productsStorage))
+    }
+
+    return this.http.get<ProductsResponse>(`${baseUrl}/products`, { //si no existen
       params: {
         limit: limit,
         offset: offset,
         gender: gender
       }
-    })/* .pipe(
-      tap(resp => console.log(resp))
-    ) */
+    }).pipe(
+      tap(resp => {
+        localStorage.setItem('products',
+        JSON.stringify(resp))
+        console.log('Productos guardados en localstorage traidos de la API')
+      })
+    )
   }
 
   /* getImages(imageName: string) {
@@ -42,4 +54,5 @@ export class ProductService {
       tap(resp => console.log(resp))
     ) */
   }
+
 }
