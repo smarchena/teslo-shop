@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Product, ProductsResponse } from '@products/interfaces/product.interface';
-import { Observable, tap, of } from 'rxjs';
+import { Observable, tap, of, delay } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 const baseUrl = environment.baseUrl
@@ -18,11 +18,13 @@ export class ProductService {
 
   private productsCache = new Map<string, ProductsResponse>()
 
+  private productCache = new Map<string, Product>()
+
   getProducts(options: Options): Observable<ProductsResponse> {
 
     const { limit = 9, offset = 0, gender = '' } = options
 
-    console.log(this.productsCache.entries())
+    // console.log(this.productsCache.entries())
 
     const key = `${limit}-${offset}-${gender}`
     if (this.productsCache.has(key)) {
@@ -30,7 +32,7 @@ export class ProductService {
     }
 
     //verificar productos localStorage
-    const productsStorage = localStorage.getItem('products')
+    // const productsStorage = localStorage.getItem('products')
 
     /* if (productsStorage) { //si existen
       console.log('Productos cargados desde el localStorage')
@@ -44,7 +46,7 @@ export class ProductService {
         gender: gender
       }
     }).pipe(
-      tap(resp => console.log(resp)),
+      // tap(resp => console.log(resp)),
       tap(resp => this.productsCache.set(key, resp))
       /* tap(resp => {
         localStorage.setItem('products',
@@ -59,10 +61,18 @@ export class ProductService {
   } */
 
   getProductByIdSlug(idSlug: string): Observable<Product> {
+
+    const key = `${idSlug}`
+     if (this.productCache.has(key)) {
+      return of(this.productCache.get(key)!)
+    }
+
     return this.http.get<Product>(`${baseUrl}/products/${idSlug}`)
-    /* .pipe(
-      tap(resp => console.log(resp))
-    ) */
+    .pipe(
+      // delay(2000),
+      // tap(resp => console.log(resp)),
+      tap(resp => this.productCache.set(key, resp))
+    )
   }
 
 }
