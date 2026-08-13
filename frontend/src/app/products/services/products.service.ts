@@ -16,10 +16,18 @@ interface Options {
 export class ProductService {
   private http = inject(HttpClient)
 
+  private productsCache = new Map<string, ProductsResponse>()
 
   getProducts(options: Options): Observable<ProductsResponse> {
 
     const { limit = 9, offset = 0, gender = '' } = options
+
+    console.log(this.productsCache.entries())
+
+    const key = `${limit}-${offset}-${gender}`
+    if (this.productsCache.has(key)) {
+      return of(this.productsCache.get(key)!)
+    }
 
     //verificar productos localStorage
     const productsStorage = localStorage.getItem('products')
@@ -36,7 +44,8 @@ export class ProductService {
         gender: gender
       }
     }).pipe(
-      tap(resp => console.log(resp))
+      tap(resp => console.log(resp)),
+      tap(resp => this.productsCache.set(key, resp))
       /* tap(resp => {
         localStorage.setItem('products',
         JSON.stringify(resp))
