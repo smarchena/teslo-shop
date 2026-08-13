@@ -9,6 +9,7 @@
       "@products/*": ["./src/app/products/*"],
       "@shared/*": ["./src/shared/*"],
       "@store-front/*": ["./src/app/store-front/*"],
+      "@environments/*": ["./src/environments/*"]
     },
     "strict": true,
     "noImplicitOverride": true,
