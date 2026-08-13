@@ -10,7 +10,7 @@ import { DataSource, Repository } from 'typeorm';
 
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { PaginationDto } from '../common/dtos/pagination.dto';
 
 import { validate as isUUID } from 'uuid';
 import { ProductImage, Product } from './entities';
@@ -28,7 +28,7 @@ export class ProductsService {
     private readonly productImageRepository: Repository<ProductImage>,
 
     private readonly dataSource: DataSource,
-  ) {}
+  ) { }
 
   async create(createProductDto: CreateProductDto, user: User) {
     try {
@@ -147,6 +147,10 @@ export class ProductsService {
   }
 
   async remove(id: string) {
+
+    if (!id) {
+      throw new BadRequestException('Product ID must be provided');
+    }
     const product = await this.findOne(id);
     await this.productRepository.remove(product);
   }
@@ -162,10 +166,20 @@ export class ProductsService {
   }
 
   async deleteAllProducts() {
-    const query = this.productRepository.createQueryBuilder('product');
-
     try {
-      return await query.delete().where({}).execute();
+      await this.productImageRepository
+        .createQueryBuilder()
+        .delete()
+        .from(ProductImage)
+        .execute();
+
+      await this.productRepository
+        .createQueryBuilder()
+        .delete()
+        .from(Product)
+        .execute();
+
+      return true;
     } catch (error) {
       this.handleDBExceptions(error);
     }

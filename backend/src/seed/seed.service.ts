@@ -5,24 +5,23 @@ import { ProductsService } from './../products/products.service';
 import { initialData } from './data/seed-data';
 import { User } from '../auth/entities/user.entity';
 
-
 @Injectable()
 export class SeedService {
 
   constructor(
     private readonly productsService: ProductsService,
 
-    @InjectRepository( User )
+    @InjectRepository(User)
     private readonly userRepository: Repository<User>
   ) {}
-
 
   async runSeed() {
 
     await this.deleteTables();
+
     const adminUser = await this.insertUsers();
 
-    await this.insertNewProducts( adminUser );
+    await this.insertNewProducts(adminUser);
 
     return 'SEED EXECUTED';
   }
@@ -31,46 +30,42 @@ export class SeedService {
 
     await this.productsService.deleteAllProducts();
 
-    const queryBuilder = this.userRepository.createQueryBuilder();
-    await queryBuilder
+    await this.userRepository
+      .createQueryBuilder()
       .delete()
-      .where({})
-      .execute()
-
+      .from(User)
+      .execute();
   }
 
   private async insertUsers() {
 
     const seedUsers = initialData.users;
-    
+
     const users: User[] = [];
 
-    seedUsers.forEach( user => {
-      users.push( this.userRepository.create( user ) )
+    seedUsers.forEach(user => {
+      users.push(this.userRepository.create(user));
     });
 
-    const dbUsers = await this.userRepository.save( seedUsers )
+    const dbUsers = await this.userRepository.save(users);
 
     return dbUsers[0];
   }
 
-
-  private async insertNewProducts( user: User ) {
-    await this.productsService.deleteAllProducts();
+  private async insertNewProducts(user: User) {
 
     const products = initialData.products;
 
     const insertPromises = [];
 
-    products.forEach( product => {
-      insertPromises.push( this.productsService.create( product, user ) );
+    products.forEach(product => {
+      insertPromises.push(
+        this.productsService.create(product, user)
+      );
     });
 
-    await Promise.all( insertPromises );
-
+    await Promise.all(insertPromises);
 
     return true;
   }
-
-
 }
