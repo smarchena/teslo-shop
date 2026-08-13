@@ -7,6 +7,7 @@ import { User } from '@auth/interfaces/user.interface';
 import { AuthResponse } from '@auth/interfaces/auth-response.interface';
 import { rxResource } from '@angular/core/rxjs-interop';
 
+
 type AuthStatus = 'checking' | 'authenticated' | 'not-aunthenticated'
 const baseUrl = environment.baseUrl
 
@@ -40,26 +41,15 @@ export class AuthService {
       email: email,
       password: password
     }).pipe(
-      tap(resp => {
-        this._user.set(resp.user)
-        this._authStatus.set('authenticated')
-        this._token.set(resp.token)
-
-        localStorage.setItem('token', resp.token)
-      }),
-      map(() => true),
-      catchError((error: any) => {
-        this._user.set(null)
-        this._token.set(null)
-        this._authStatus.set('not-aunthenticated')
-        return of(false)
-      })
+      map(resp => this.handleAuthSuccess(resp)),
+      catchError((error: any) => this.handleAuthError(error))
     )
   }
 
   checkStatus(): Observable<boolean> {
     const token = localStorage.getItem('token')
     if (!token) {
+      this.logOut()
       return of(false)
     }
 
@@ -68,22 +58,30 @@ export class AuthService {
         Authorization: `Bearer ${token}`
       }
     }).pipe(
-      tap(resp => {
-        this._user.set(resp.user)
-        this._authStatus.set('authenticated')
-        this._token.set(resp.token)
-
-        localStorage.setItem('token', resp.token)
-      }),
-      map(() => true),
-      catchError((error: any) => {
-        this._user.set(null)
-        this._token.set(null)
-        this._authStatus.set('not-aunthenticated')
-        return of(false)
-      })
-
+      map(resp => this.handleAuthSuccess(resp)),
+      catchError((error: any) => this.handleAuthError(error))
     )
+  }
 
+  logOut() {
+    this._user.set(null)
+    this._token.set(null)
+    this._authStatus.set('not-aunthenticated')
+
+    localStorage.removeItem('token')
+  }
+
+  private handleAuthSuccess({ token, user }: AuthResponse) {
+    this._user.set(user)
+    this._authStatus.set('authenticated')
+    this._token.set(token)
+
+    localStorage.setItem('token', token)
+    return true
+  }
+
+  private handleAuthError(error: any) {
+    this.logOut()
+    return of(false)
   }
 }
