@@ -13,5 +13,8 @@ export const IsAdminGuard: CanMatchFn = async (
 
   await firstValueFrom(authService.checkStatus())
 
-  return authService.isAdmin();
+  if (!authService.isAdmin()) {
+    return router.createUrlTree(['/']);
+  }
+  return true;
 };
