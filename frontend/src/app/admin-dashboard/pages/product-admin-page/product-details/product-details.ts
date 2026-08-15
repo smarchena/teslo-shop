@@ -42,6 +42,18 @@ export class ProductDetails implements OnInit {
 
   }
 
+  onSizeClicked(size: string) {
+    const currentSizes = this.productForm.value.sizes ?? []
+
+    if (currentSizes.includes(size)) {
+      currentSizes.splice(currentSizes.indexOf(size), 1)
+    } else {
+      currentSizes.push(size)
+    }
+
+    this.productForm.patchValue({sizes: currentSizes})
+
+  }
 
   onSubmit() {
     console.log(this.productForm.value)
