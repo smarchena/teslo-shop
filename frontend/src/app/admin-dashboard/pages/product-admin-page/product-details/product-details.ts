@@ -4,11 +4,12 @@ import { ProductCarousel } from "@products/components/product-carousel/product-c
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormUtils } from '@utils/form-utils';
 import { AuthService } from '@auth/services/auth.service';
+import { FormErrorLabel } from "@shared/components/form-error-label/form-error-label";
 
 
 @Component({
   selector: 'product-details',
-  imports: [ProductCarousel, ReactiveFormsModule],
+  imports: [ProductCarousel, ReactiveFormsModule, FormErrorLabel],
   templateUrl: './product-details.html',
 })
 export class ProductDetails implements OnInit {
@@ -56,6 +57,7 @@ export class ProductDetails implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.productForm.value)
+    const isValid = this.productForm.valid
+    console.log(this.productForm.value, {isValid})
   }
 }
