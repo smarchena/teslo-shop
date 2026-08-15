@@ -39,7 +39,7 @@
     </div>
 
     <!-- tags -->
-    <input type="text" placeholder="Tags" class="input input-bordered w-full"
+    <input formControlName="tags" type="text" placeholder="Tags" class="input input-bordered w-full"
     [class.border-red-500]="productForm.get('tags')?.errors ?? false" />
 
     <form-error-label [control]="productForm.get('tags')!"></form-error-label>

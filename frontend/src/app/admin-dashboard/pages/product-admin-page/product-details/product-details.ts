@@ -52,12 +52,23 @@ export class ProductDetails implements OnInit {
       currentSizes.push(size)
     }
 
-    this.productForm.patchValue({sizes: currentSizes})
+    this.productForm.patchValue({ sizes: currentSizes })
 
   }
 
   onSubmit() {
     const isValid = this.productForm.valid
-    console.log(this.productForm.value, {isValid})
+    this.productForm.markAllAsTouched()
+
+    if (!isValid) return
+
+    const formValue = this.productForm.value
+
+    const productLike: Partial<Product> = {
+      ...(formValue as any),
+      tags: formValue.tags?.toLocaleLowerCase().split(',').map(tag => tag.trim()) ?? []
+    }
+
+    console.log(productLike)
   }
 }
