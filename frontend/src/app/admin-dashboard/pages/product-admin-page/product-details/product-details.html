@@ -1,7 +1,7 @@
 <h1 class="text-2xl font-bold">{{ product().title }}</h1>
 <div class="divider"></div>
 
-<form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
   <!-- Datos generales -->
   <div class="flex flex-col gap-2">
     <h2 class="text-2xl font-bold h-12">Datos generales</h2>
@@ -15,7 +15,7 @@
 
     <form-error-label [control]="productForm.get('slug')!"></form-error-label>
 
-    <textarea class="textarea textarea-bordered" placeholder="Descripción" rows="6"
+    <textarea class="textarea textarea-bordered w-full" placeholder="Descripción" rows="6"
       formControlName="description" [class.border-red-500]="productForm.get('description')?.errors ?? false"></textarea>
 
      <form-error-label [control]="productForm.get('description')!"></form-error-label>
