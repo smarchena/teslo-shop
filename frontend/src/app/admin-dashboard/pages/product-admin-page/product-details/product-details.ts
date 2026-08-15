@@ -5,6 +5,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormUtils } from '@utils/form-utils';
 import { AuthService } from '@auth/services/auth.service';
 import { FormErrorLabel } from "@shared/components/form-error-label/form-error-label";
+import { ProductService } from '@products/services/products.service';
 
 
 @Component({
@@ -14,6 +15,7 @@ import { FormErrorLabel } from "@shared/components/form-error-label/form-error-l
 })
 export class ProductDetails implements OnInit {
   product = input.required<Product>()
+  productService = inject(ProductService)
 
 
   fb = inject(FormBuilder)
@@ -69,6 +71,10 @@ export class ProductDetails implements OnInit {
       tags: formValue.tags?.toLocaleLowerCase().split(',').map(tag => tag.trim()) ?? []
     }
 
-    console.log(productLike)
+    this.productService.updateProduct(this.product().id,  productLike).subscribe(
+      producto => {
+        console.log('Producto Actualizado!')
+      }
+    )
   }
 }

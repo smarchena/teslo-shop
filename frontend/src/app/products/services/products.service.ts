@@ -63,28 +63,32 @@ export class ProductService {
   getProductByIdSlug(idSlug: string): Observable<Product> {
 
     const key = `${idSlug}`
-     if (this.productCache.has(key)) {
+    if (this.productCache.has(key)) {
       return of(this.productCache.get(key)!)
     }
 
     return this.http.get<Product>(`${baseUrl}/products/${idSlug}`)
-    .pipe(
-      // delay(2000),
-      // tap(resp => console.log(resp)),
-      tap(resp => this.productCache.set(key, resp))
-    )
+      .pipe(
+        // delay(2000),
+        // tap(resp => console.log(resp)),
+        tap(resp => this.productCache.set(key, resp))
+      )
   }
 
   getProductById(id: string): Observable<Product> {
     const key = `${id}`
-     if (this.productCache.has(key)) {
+    if (this.productCache.has(key)) {
       return of(this.productCache.get(key)!)
     }
 
     return this.http.get<Product>(`${baseUrl}/products/${id}`)
-    .pipe(
-      tap(resp => this.productCache.set(key, resp))
-    )
+      .pipe(
+        tap(resp => this.productCache.set(key, resp))
+      )
+  }
+
+  updateProduct(id: string, productLike: Partial<Product>): Observable<Product> {
+    return this.http.patch<Product>(`${baseUrl}/products/${id}`, productLike)
   }
 
 }
