@@ -71,7 +71,7 @@ export class ProductDetails implements OnInit {
       tags: formValue.tags?.toLocaleLowerCase().split(',').map(tag => tag.trim()) ?? []
     }
 
-    this.productService.updateProduct(this.product().id,  productLike).subscribe(
+    this.productService.updateProduct(this.product().id, productLike).subscribe(
       producto => {
         console.log('Producto Actualizado!')
       }
