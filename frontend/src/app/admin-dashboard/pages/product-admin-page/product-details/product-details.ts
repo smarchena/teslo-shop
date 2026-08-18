@@ -1,11 +1,13 @@
-import { Component, inject, input, OnInit } from '@angular/core';
-import { Product } from '@products/interfaces/product.interface';
-import { ProductCarousel } from "@products/components/product-carousel/product-carousel";
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ProductCarousel } from "@products/components/product-carousel/product-carousel";
+import { firstValueFrom } from 'rxjs';
+
+import { Product } from '@products/interfaces/product.interface';
 import { FormUtils } from '@utils/form-utils';
-import { AuthService } from '@auth/services/auth.service';
-import { FormErrorLabel } from "@shared/components/form-error-label/form-error-label";
 import { ProductService } from '@products/services/products.service';
+
+import { FormErrorLabel } from "@shared/components/form-error-label/form-error-label";
 import { Router } from '@angular/router';
 
 
@@ -21,6 +23,7 @@ export class ProductDetails implements OnInit {
   fb = inject(FormBuilder)
 
   productService = inject(ProductService)
+  wasSaved = signal(false)
 
   productForm = this.fb.group({
     title: ['', Validators.required],
@@ -60,7 +63,7 @@ export class ProductDetails implements OnInit {
 
   }
 
-  onSubmit() {
+  async onSubmit() {
     const isValid = this.productForm.valid
     this.productForm.markAllAsTouched()
 
@@ -74,16 +77,23 @@ export class ProductDetails implements OnInit {
     }
 
     if (this.product().id === 'new') {
-      this.productService.createProduct(productLike).subscribe(product => {
-        console.log('Producto creado')
-        this.router.navigate(['/admin/products', product.id])
-      })
+      const product = await firstValueFrom(
+        this.productService.createProduct(productLike)
+      )
+
+      this.router.navigate(['/admin/products', product.id])
+
     } else {
-      this.productService.updateProduct(this.product().id, productLike).subscribe(
-        producto => {
-          console.log('Producto Actualizado!')
-        }
+      await firstValueFrom(
+        this.productService.updateProduct(this.product().id, productLike)
       )
     }
+
+    this.wasSaved.set(true)
+    setTimeout(() => {
+      this.wasSaved.set(false)
+    }, 3000);
   }
 }
+
+
