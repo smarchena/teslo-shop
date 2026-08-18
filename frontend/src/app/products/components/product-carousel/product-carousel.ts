@@ -33,10 +33,13 @@ export class ProductCarousel implements AfterViewInit, OnChanges {
 
     if (!this.swiper) return
 
+    this.swiper!.destroy(true, true)
+    const paginationEl: HTMLDivElement = this.swiperDiv().nativeElement?.querySelector('.swiper-pagination')
+    paginationEl.innerHTML = ''
+
     setTimeout(() => {
-      this.swiper!.destroy(true, true)
       this.swiperInit()
-    });
+    }, 100);
   }
 
   ngAfterViewInit(): void {
