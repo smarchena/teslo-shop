@@ -6,6 +6,7 @@ import { FormUtils } from '@utils/form-utils';
 import { AuthService } from '@auth/services/auth.service';
 import { FormErrorLabel } from "@shared/components/form-error-label/form-error-label";
 import { ProductService } from '@products/services/products.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -15,10 +16,11 @@ import { ProductService } from '@products/services/products.service';
 })
 export class ProductDetails implements OnInit {
   product = input.required<Product>()
-  productService = inject(ProductService)
 
-
+  router = inject(Router)
   fb = inject(FormBuilder)
+
+  productService = inject(ProductService)
 
   productForm = this.fb.group({
     title: ['', Validators.required],
@@ -71,10 +73,17 @@ export class ProductDetails implements OnInit {
       tags: formValue.tags?.toLocaleLowerCase().split(',').map(tag => tag.trim()) ?? []
     }
 
-    this.productService.updateProduct(this.product().id, productLike).subscribe(
-      producto => {
-        console.log('Producto Actualizado!')
-      }
-    )
+    if (this.product().id === 'new') {
+      this.productService.createProduct(productLike).subscribe(product => {
+        console.log('Producto creado')
+        this.router.navigate(['/admin/products', product.id])
+      })
+    } else {
+      this.productService.updateProduct(this.product().id, productLike).subscribe(
+        producto => {
+          console.log('Producto Actualizado!')
+        }
+      )
+    }
   }
 }
