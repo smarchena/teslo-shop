@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { User } from '@auth/interfaces/user.interface';
 import { Gender, Product, ProductsResponse } from '@products/interfaces/product.interface';
-import { Observable, tap, of, delay } from 'rxjs';
+import { Observable, tap, of, delay, map, forkJoin } from 'rxjs';
 import { environment } from '@environments/environment';
 
 const baseUrl = environment.baseUrl
@@ -134,5 +134,27 @@ export class ProductService {
 
     console.log('Cache actualizado.')
   }
+  // toma un FileList y lo sube
+  uploadImages(images?: FileList): Observable<string[]> {
+    if (!images) return of([])
 
+    const uploadObservables = Array.from(images)
+      .map(imageFile => this.uploadImage(imageFile))
+
+    return forkJoin(uploadObservables).pipe(
+      tap(imageName => console.log({imageName}))
+    )
+  }
+
+  uploadImage(imageFile: File): Observable<string> {
+
+    const formData = new FormData()
+    formData.append('file', imageFile)
+
+    return this.http.post<{ fileName: string }>(`${baseUrl}/files/product`, formData)
+      .pipe(
+        map((resp) => resp.fileName)
+      )
+
+  }
 }
