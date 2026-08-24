@@ -18,17 +18,23 @@ The project is divided into two applications:
 
 ## Getting Started
 Clone the repository:
+```
 git clone https://github.com/smarchena/teslo-shop.git
 cd teslo-shop
+```
 
 ## Backend
 > **Note:** Docker is required to run the backend and its database.
+```
 cd backend
 npm install
 npm run start:dev
+```
 
-## Fronted
+## Frontend
 Open another terminal:
+```
 cd frontend
 npm install
 ng serve
+```
